@@ -1,0 +1,4 @@
+#!/bin/bash
+echo hey
+read i
+echo $i

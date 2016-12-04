@@ -1,0 +1,20 @@
+#!/bin/bash
+while IFS='' read -r line || [[ -n "$line" ]]; do
+  arr=($line)
+
+  len=${#arr[@]}
+  i=0
+  while [ $i -lt $len ]
+  do
+    j=$i
+    string=""
+    newI=$(( $i + $len ))
+    while [ $j -lt $newI ]; do
+       string="$string ${arr[$j]}"
+      ((j++))
+    done
+    arr[$newI]=${arr[$i]}
+    echo $string
+    ((i++))
+  done
+done < "$1"

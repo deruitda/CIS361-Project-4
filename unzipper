@@ -1,0 +1,30 @@
+#!/bin/bash
+index=-1;
+strindex() {
+  x="${1%%$2*}"
+  [[ $x = $1 ]] && index=-1 || index=${#x}
+}
+
+#create directory
+echo "Enter the name of the directory where the file will be unzipped: "
+read dirName
+
+#unzip
+unzip  cis361p4.zip -d $dirName
+
+FILES=$dirName/*
+for f in $FILES
+do
+  echo "Full name: $f"
+  #substring to the beginning of the username
+  Username=${f:${#dirName}+11}
+  strindex "$Username" "_"
+  Username=${Username:0:$index}
+  echo "Username is: $Username"
+  if [ -d "$dirName/$Username" ]; then
+    echo "Dir exists"
+  else
+      mkdir $dirName/$Username
+  fi
+  mv "$f" "$dirName/$Username"
+done

@@ -1,4 +1,5 @@
 #!/bin/bash
-echo hey
-read i
-echo $i
+while read -r line
+do
+    echo "$line"
+done <<< $(find . -type f)

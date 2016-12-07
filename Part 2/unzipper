@@ -15,16 +15,31 @@ unzip  cis361p4.zip -d $dirName
 FILES=$dirName/*
 for f in $FILES
 do
-  echo "Full name: $f"
   #substring to the beginning of the username
   Username=${f:${#dirName}+11}
   strindex "$Username" "_"
   Username=${Username:0:$index}
-  echo "Username is: $Username"
-  if [ -d "$dirName/$Username" ]; then
-    echo "Dir exists"
-  else
-      mkdir $dirName/$Username
+
+  #create the dir if it does not exits
+  if [ ! -d "$dirName/$Username" ]; then
+    mkdir $dirName/$Username
+    echo "Created $dirName/$Username"
   fi
-  mv "$f" "$dirName/$Username"
+  #find file name
+  fileName=${f:${#dirName}+40:${#f}}
+  strindex "$fileName" "_"
+  if [ $index == -1 ]; then
+    fileName="memo.txt"
+  else
+    fileName=${fileName:$index+1:${#f}}
+  fi
+  #move the file to the user's dir
+  mv "$f" "$fileName"
+  mv "$fileName" "$dirName/$Username"
+  echo "Moved $fileName to $dirName/$Username"
+
+  if [ "$fileName" == "makefile" ]; then
+    $dirName/$Username/./makefile
+    ./cipher 1 test LetFreq.txt out.txt
+  fi
 done

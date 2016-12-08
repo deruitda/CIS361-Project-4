@@ -5,19 +5,26 @@ strindex() {
   [[ $x = $1 ]] && index=-1 || index=${#x}
 }
 
+#file to unzip
+echo "Enter the name of the file to be unzipped: "
+read zipName
+
 #create directory
 echo "Enter the name of the directory where the file will be unzipped: "
 read dirName
 
 #unzip
-unzip  cis361p4.zip -d $dirName
+unzip  $zipName -d $dirName
 
+#list of files in zip folder
 FILES=$dirName/*
 for f in $FILES
 do
   #substring to the beginning of the username
   Username=${f:${#dirName}+11}
+  #look for the first appearance of an underscore
   strindex "$Username" "_"
+  #use the index of the first underscore in the substring
   Username=${Username:0:$index}
 
   #create the dir if it does not exits
@@ -25,7 +32,7 @@ do
     mkdir $dirName/$Username
     echo "Created $dirName/$Username"
   fi
-  #find file name
+  #find file name by naviagting to the last underscore
   fileName=${f:${#dirName}+40:${#f}}
   strindex "$fileName" "_"
   if [ $index == -1 ]; then
@@ -33,13 +40,14 @@ do
   else
     fileName=${fileName:$index+1:${#f}}
   fi
-  #move the file to the user's dir
+  #change file name
   mv "$f" "$fileName"
+  #move file to student's dir
   mv "$fileName" "$dirName/$Username"
   echo "Moved $fileName to $dirName/$Username"
 
   if [ "$fileName" == "makefile" ]; then
-    $dirName/$Username/./makefile
-    ./cipher 1 test LetFreq.txt out.txt
+    make -C $dirName/$Username
+    
   fi
 done

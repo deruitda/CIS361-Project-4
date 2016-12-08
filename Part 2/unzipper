@@ -1,21 +1,17 @@
 #!/bin/bash
+exec > report 2>&1
+
 index=-1;
 strindex() {
   x="${1%%$2*}"
   [[ $x = $1 ]] && index=-1 || index=${#x}
 }
 
-#file to unzip
-echo "Enter the name of the file to be unzipped: "
-read zipName
-
-#create directory
-echo "Enter the name of the directory where the file will be unzipped: "
-read dirName
-
+zipName=$1
+dirName=$2
 #unzip
 unzip  $zipName -d $dirName
-
+usernames=()
 #list of files in zip folder
 FILES=$dirName/*
 for f in $FILES
@@ -26,7 +22,6 @@ do
   strindex "$Username" "_"
   #use the index of the first underscore in the substring
   Username=${Username:0:$index}
-
   #create the dir if it does not exits
   if [ ! -d "$dirName/$Username" ]; then
     mkdir $dirName/$Username
@@ -46,8 +41,11 @@ do
   mv "$fileName" "$dirName/$Username"
   echo "Moved $fileName to $dirName/$Username"
 
-  if [ "$fileName" == "makefile" ]; then
-    make -C $dirName/$Username
-    
-  fi
+done
+cd $dirName
+DIRS=*
+for d in $DIRS
+do
+  make -f ../../makeFile -C "$d"
+  make test -f ../../makeFile -C "$d"
 done

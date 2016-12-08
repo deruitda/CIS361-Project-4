@@ -1,0 +1,9 @@
+Analysis Software Requirements
+Filters Pipes and
+Java Swing
+Requirements Analysis Software
+Swing Java
+Software Requirements Analysis
+
+The number of lines in the input file sample.dat is 4
+The number of lines in the output file output.txt is 6

@@ -15,7 +15,8 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
       ((j++))
     done
     arr[$newI]=${arr[$i]}
-    if [ "$numberOfLines" -eq "0" ]; then
+    if [ "$numberOfLines" -eq "0" -a "$i" -eq "0" ]; 
+    then
        returnVal="$string"
     else
        returnVal="$returnVal"$'\n'"$string"

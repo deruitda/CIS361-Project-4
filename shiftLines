@@ -1,7 +1,8 @@
 #!/bin/bash
+returnVal=""
+numberOfLines=0
 while IFS='' read -r line || [[ -n "$line" ]]; do
   arr=($line)
-
   len=${#arr[@]}
   i=0
   while [ $i -lt $len ]
@@ -14,7 +15,14 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
       ((j++))
     done
     arr[$newI]=${arr[$i]}
-    echo $string
+    if [ "$numberOfLines" -eq "0" ]; then
+       returnVal="$string"
+    else
+       returnVal="$returnVal"$'\n'"$string"
+    fi
     ((i++))
   done
+((numberOfLines++))
 done < "$1"
+echo "$1 $numberOfLines"
+echo "$returnVal"

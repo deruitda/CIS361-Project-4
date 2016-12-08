@@ -1,0 +1,49 @@
+#!/bin/bash
+ord() {
+ 	LC_CTYPE=C printf '%d' "'$1"
+}
+char="c"
+var=$( ord $char )
+lines=()
+originNumberOfLines=0
+originFilename=""
+numberOfLines=-1
+while IFS='' read -r line || [[ -n "$line" ]]; do
+	if [ "$numberOfLines" -eq "-1" ]; then
+		argLine=($line)
+		originFilename=${argLine[0]}
+		originNumberOfLines=${argLine[1]}
+		((numberOfLines++))
+		continue
+	fi
+	lines[$numberOfLines]=$line
+	((numberOfLines++))
+done
+i=0
+while [ "$i" -lt "$numberOfLines" ]; do
+	j=1
+	while [ "$j" -lt "$numberOfLines" ]; do
+		charJMin1="${lines["$j-1"]:0:1}" 
+		charJMin1="${charJMin1^^}"
+		charJMin1=$( ord $charJMin1 )
+		charJ="${lines[$j]:0:1}" 
+		charJ="${charJ^^}"
+		charJ=$( ord $charJ )
+		if [ "$charJMin1" -gt "$charJ" ]; then
+			temp=${lines[$j-1]}
+			lines[$j-1]=${lines[$j]}
+			lines[$j]=$temp
+		fi
+		((j++))
+	done
+	((i++))
+done
+i=0
+while [ "$i" -lt "$numberOfLines" ]; do
+	echo "${lines[$i]}" >> "$1"
+	((i++))
+done
+
+echo "" >> "$1"
+echo "The number of lines in the input file $originFilename is $originNumberOfLines" >> "$1"
+echo "The number of lines in the output file $1 is $numberOfLines" >> "$1"
